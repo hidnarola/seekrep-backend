@@ -1,0 +1,221 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Demo - API",
+    "description": "Demo - API for frontend web app"
+  },
+  "host": "localhost:3000",
+  "basePath": "/",
+  "securityDefinitions": {
+    "jwt": {
+      "type": "apiKey",
+      "in": "header",
+      "name": "x-access-token"
+    }
+  },
+  "security": [
+    {
+      "jwt": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Root",
+      "description": "API can be access without token (Guest user)"
+    },
+    {
+      "name": "User",
+      "description": ""
+    }
+  ],
+  "schemes": ["http"],
+  "consumes": ["application/json", "multipart/form-data"],
+  "produces": ["application/json"],
+  "paths": {
+    "/signup": {
+      "post": {
+        "tags": ["Root"],
+        "summary": "User Registration",
+        "operationId": "uploadFiles",
+        "consumes": ["multipart/form-data"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "firstName",
+            "in": "formData",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "lastName",
+            "in": "formData",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "gender",
+            "in": "formData",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "email",
+            "in": "formData",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "password",
+            "in": "formData",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "phone",
+            "in": "formData",
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "image",
+            "in": "formData",
+            "required": false,
+            "type": "file"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User registration done successfully"
+          },
+          "500": {
+            "description": "Error occurred while registration"
+          }
+        }
+      }
+    },
+    "/email_verify/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "User Id",
+          "type": "string"
+        }
+      ],
+      "get": {
+        "tags": ["Root"],
+        "summary": "Verify Email",
+        "responses": {
+          "200": {
+            "description": "Return appropriate  message"
+          }
+        }
+      }
+    },
+    "/login": {
+      "parameters": [
+        {
+          "name": "body",
+          "in": "body",
+          "required": true,
+          "schema": {
+            "required": ["email", "password"],
+            "properties": {
+              "email": {
+                "type": "string",
+                "example": "mm@narola.email"
+              },
+              "password": {
+                "type": "string",
+                "example": "Mansi@1994"
+              }
+            }
+          },
+          "description": "Required details to login"
+        }
+      ],
+      "post": {
+        "tags": ["Root"],
+        "summary": "User login Details",
+        "responses": {
+          "200": {
+            "description": "Return success message with appropriate status"
+          }
+        }
+      }
+    },
+    "/forgot_password": {
+      "parameters": [
+        {
+          "name": "body",
+          "in": "body",
+          "required": true,
+          "schema": {
+            "required": ["email"],
+            "properties": {
+              "email": {
+                "type": "string",
+                "example": "mm@narola.email"
+              }
+            }
+          },
+          "description": "Required details for Forget Password"
+        }
+      ],
+      "post": {
+        "tags": ["Root"],
+        "summary": "User Forget Password",
+        "responses": {
+          "200": {
+            "description": "Return success message with appropriate status"
+          }
+        }
+      }
+    },
+    "/reset_password": {
+      "parameters": [
+        {
+          "name": "body",
+          "in": "body",
+          "required": true,
+          "schema": {
+            "required": ["password", "token"],
+            "properties": {
+              "password": {
+                "type": "string",
+                "example": "Mansi@2019"
+              },
+              "token": {
+                "type": "string",
+                "example": "ZXlKaGJHY2lPaUpJVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SmZhV1FpT2lJMVpHVTFaakZrWVRsaE4yVTRaakE1TURBNVpEZ3pNR1FpTENKcFlYUWlPakUxTnpVek5UTTROeklzSW1WNGNDSTZNVFUzTlRrMU9EWTNNbjAuWHIydnMxRXZZT2luTVdlSlh2VDBRTU9WVmNhZllxQ3F1dXZ3SVhZSV9kQQ=="
+              }
+            }
+          },
+          "description": "Required details to reset Password"
+        }
+      ],
+      "post": {
+        "tags": ["Root"],
+        "summary": "User Reset Password",
+        "responses": {
+          "200": {
+            "description": "Return success message with appropriate status"
+          }
+        }
+      }
+    },
+    "/users/profile": {
+      "get": {
+        "tags": ["User"],
+        "summary": "Get profile details",
+        "responses": {
+          "200": {
+            "description": "Profile Details found"
+          }
+        }
+      }
+    }
+  }
+}

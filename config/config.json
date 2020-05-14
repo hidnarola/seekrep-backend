@@ -1,0 +1,35 @@
+{
+  "development": {
+    "config_id": "development",
+    "node_port": 8080,
+    "database": "test",
+    "URI": "mongodb://localhost:27017/test",
+    "ACCESS_TOKEN_SECRET_KEY": "hardpassword",
+    "ACCESS_TOKEN_EXPIRE_TIME": "7d",
+    "website_url": "http://localhost:3000",
+    "OK_STATUS": 200,
+    "BAD_REQUEST": 400,
+    "UNAUTHORIZED": 401,
+    "NOT_FOUND": 404,
+    "MEDIA_ERROR_STATUS": 415,
+    "VALIDATION_FAILURE_STATUS": 417,
+    "DATABASE_ERROR_STATUS": 422,
+    "INTERNAL_SERVER_ERROR": 500
+  },
+  "production": {
+    "config_id": "production",
+    "node_port": 8080,
+    "database": "admin",
+    "URI": "mongodb://username:password@localhost:27017/admin",
+    "ACCESS_TOKEN_SECRET_KEY": "veryveryhardpassword",
+    "ACCESS_TOKEN_EXPIRE_TIME": "1d",
+    "OK_STATUS": 200,
+    "BAD_REQUEST": 400,
+    "UNAUTHORIZED": 401,
+    "NOT_FOUND": 404,
+    "MEDIA_ERROR_STATUS": 415,
+    "VALIDATION_FAILURE_STATUS": 417,
+    "DATABASE_ERROR_STATUS": 422,
+    "INTERNAL_SERVER_ERROR": 500
+  }
+}
