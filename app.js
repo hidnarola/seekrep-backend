@@ -13,6 +13,8 @@ const fileUpload = require("express-fileupload");
 const swaggerUi = require("swagger-ui-express"),
   swaggerDocument = require("./swagger.json");
 
+require("dotenv").config();
+
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 var reviewRouter = require("./routes/review");
@@ -117,12 +119,12 @@ app.use("/images", express.static(path.join(__dirname, "public/images")));
 
 // mongoose db connection
 mongoose
-  .connect(global.gConfig.URI, {
+  .connect(process.env.URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true
   })
   .then(() => {
-    console.info(`DB connected Successfully on ${global.gConfig.URI}`);
+    console.info(`DB connected Successfully on ${process.env.URI}`);
   })
   .catch(() => {
     console.error("DB connection failed");

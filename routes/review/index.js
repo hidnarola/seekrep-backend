@@ -9,96 +9,89 @@ const common_helper = require("../../controller/common");
 const User = require("../../models/user");
 const Review = require("../../models/review");
 
-router.post("/addproduct", async function(req, res) {
-  var schema = {
-    productName: {
-      notEmpty: true,
-      errorMessage: "Product Name is required"
-    },
-    price: {
-      notEmpty: true,
-      errorMessage: "Price is required"
-    },
-    description: {
-      notEmpty: true,
-      errorMessage: "Description is required"
-    }
-  };
-  req.checkBody(schema);
-  var errors = req.validationErrors();
-  if (!errors) {
-    var obj = {
-      productName: req.body.productName,
-      price: req.body.price,
-      description: req.body.description,
-      creator: "5ebce11dad53f11938cdaaa1"
-    };
-    console.log("obj", obj);
-
-    let product = await common_helper.find(
-      Review,
-      { productName: req.body.productName, isDel: false },
-      1
-    );
-    if (product.status === 1) {
-      res
-        .status(global.gConfig.BAD_REQUEST)
-        .json({ status: 0, message: "Product is alredy added" });
-    } else if (product.status === 2) {
-      var add_resp = await common_helper.insert(Review, obj);
-      if (add_resp.status == 0) {
-        res.status(global.gConfig.BAD_REQUEST).json(add_resp);
-      } else {
-        res.status(global.gConfig.OK_STATUS).json({
-          message: "You are added successfully",
-          add_resp
-        });
-      }
-    }
-  } else {
-    res.status(global.gConfig.BAD_REQUEST).json({ message: errors });
-  }
-});
-
 // router.post("/addproduct", async function(req, res) {
-//   const errors = validationResult(req);
-//   if (!errors.isEmpty()) {
-//     const error = new Error("Validation failed, entered data is incorrect.");
-//     error.statusCode = 422;
-//     throw error;
-//   }
+//   var schema = {
+//     productName: {
+//       notEmpty: true,
+//       errorMessage: "Product Name is required"
+//     },
+//     price: {
+//       notEmpty: true,
+//       errorMessage: "Price is required"
+//     },
+//     description: {
+//       notEmpty: true,
+//       errorMessage: "Description is required"
+//     }
+//   };
+//   req.checkBody(schema);
+//   var errors = req.validationErrors();
+//   if (!errors) {
+//     var obj = {
+//       productName: req.body.productName,
+//       price: req.body.price,
+//       description: req.body.description,
+//       creator: "5ebce11dad53f11938cdaaa1"
+//     };
+//     console.log("obj", obj);
 
-//   let creator;
-//   const post = new Review({
-//     productName: req.body.productName,
-//     price: req.body.price,
-//     description: req.body.description,
-//     creator: "5ebce11dad53f11938cdaaa1"
-//   });
-//   post
-//     .save()
-//     .then(result => {
-//       return User.findById(req.userId);
-//     })
-//     .then(user => {
-//       creator = user;
-//       user.posts.push(post);
-//       return user.save();
-//     })
-//     .then(result => {
-//       res.status(201).json({
-//         message: "Post created successfully!",
-//         post: post,
-//         creator: { _id: creator._id, name: creator.name }
-//       });
-//     })
-//     .catch(err => {
-//       if (!err.statusCode) {
-//         err.statusCode = 500;
+//     let product = await common_helper.find(
+//       Review,
+//       { productName: req.body.productName, isDel: false },
+//       1
+//     );
+//     if (product.status === 1) {
+//       res
+//         .status(global.gConfig.BAD_REQUEST)
+//         .json({ status: 0, message: "Product is alredy added" });
+//     } else if (product.status === 2) {
+//       var add_resp = await common_helper.insert(Review, obj);
+//       if (add_resp.status == 0) {
+//         res.status(global.gConfig.BAD_REQUEST).json(add_resp);
+//       } else {
+//         res.status(global.gConfig.OK_STATUS).json({
+//           message: "You are added successfully",
+//           add_resp
+//         });
 //       }
-//       next(err);
-//     });
+//     }
+//   } else {
+//     res.status(global.gConfig.BAD_REQUEST).json({ message: errors });
+//   }
 // });
+
+router.post("/addproduct", async function(req, res) {
+  let creator;
+  const post = new Review({
+    productName: req.body.productName,
+    price: req.body.price,
+    description: req.body.description,
+    creator: "5ebce11dad53f11938cdaaa1"
+  });
+  post
+    .save()
+    .then(result => {
+      return User.findById("5ebce11dad53f11938cdaaa1");
+    })
+    .then(user => {
+      creator = user;
+      user.reviews.push(post);
+      return user.save();
+    })
+    .then(result => {
+      res.status(201).json({
+        message: "Post created successfully!",
+        post: post,
+        creator: { _id: creator._id }
+      });
+    })
+    .catch(err => {
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
+    });
+});
 
 router.put("/editproduct/:id", async function(req, res) {
   try {
