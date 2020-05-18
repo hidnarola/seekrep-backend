@@ -60,18 +60,21 @@ const Review = require("../../models/review");
 //   }
 // });
 
-router.post("/addproduct", async function(req, res) {
+router.post("/addreview", async function(req, res, next) {
   let creator;
   const post = new Review({
-    productName: req.body.productName,
-    price: req.body.price,
-    description: req.body.description,
-    creator: "5ebce11dad53f11938cdaaa1"
+    rating: req.body.rating,
+    transactionproof: req.body.transactionproof,
+    place: req.body.place,
+    review: req.body.review,
+    creator: req.body.id
   });
+
   post
     .save()
     .then(result => {
-      return User.findById("5ebce11dad53f11938cdaaa1");
+      console.log("result", result);
+      return User.findById(req.body.id);
     })
     .then(user => {
       creator = user;
@@ -80,7 +83,8 @@ router.post("/addproduct", async function(req, res) {
     })
     .then(result => {
       res.status(201).json({
-        message: "Post created successfully!",
+        status: 1,
+        message: "Review Added Successfully!",
         post: post,
         creator: { _id: creator._id }
       });
@@ -173,7 +177,7 @@ router.get("/list", async function(req, res) {
   if (allproduct) {
     res
       .status(global.gConfig.OK_STATUS)
-      .json({ message: "data fetched", allproduct });
+      .json({ message: "data fetched", allreviews: allproduct });
   } else {
     res.status(global.gConfig.BAD_REQUEST).json({ message: errors });
   }

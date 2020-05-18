@@ -17,61 +17,6 @@ const mail_helper = require("../controller/mail");
 const User = require("../models/user");
 
 /* Register Api */
-// router.post('/signup', async function (req, res) {
-//   var schema = {
-//     "email": {
-//       notEmpty: true,
-//       errorMessage: "Email is required"
-//     },
-//     "password": {
-//       notEmpty: true,
-//       errorMessage: "Password is required"
-//     },
-//   }
-//   req.checkBody(schema);
-//   var errors = req.validationErrors();
-//   if (!errors) {
-//     var obj = {
-//       "firstName": req.body.firstName,
-//       "lastName": req.body.lastName,
-//       "email": req.body.email,
-//       "password": req.body.password,
-//       "phone": req.body.phone,
-//       "gender": req.body.gender
-//     }
-//     if (req.files && req.files["image"]) {
-//       var file = req.files["image"];
-//       var mimetype = ["image/jpeg", "image/png", 'application/pdf'];
-//       let fileUpload = await common_helper.fileUpload(mimetype, file);
-//       obj.image = file.name;
-//     }
-
-//     let user = await common_helper.find(User, { "email": req.body.email, "isDel": false }, 1)
-//     if (user.status === 1) {
-//       res.status(global.gConfig.BAD_REQUEST).json({ "status": 0, "message": "Email is alredy registered" });
-//     }
-//     else if (user.status === 2) {
-//       var register_resp = await common_helper.insert(User, obj);
-//       if (register_resp.status == 0) {
-//         res.status(global.gConfig.BAD_REQUEST).json(register_resp);
-//       } else {
-//         let mail_resp = await mail_helper.send("email_confirmation", {
-//           "to": req.body.email,
-//           "subject": "Demo - Email Confirmation"
-//         }, {
-//           "link": global.gConfig.website_url + "/email_confirm/" + register_resp.data._id
-//         });
-//         res.status(global.gConfig.OK_STATUS).json({ "message": "You are registered successfully", register_resp });
-//       }
-//     }
-//   }
-//   else {
-//     res.status(global.gConfig.BAD_REQUEST).json({ "message": errors });
-//   }
-
-// });
-
-/* Register api without email varification */
 router.post("/signup", async function(req, res) {
   var schema = {
     email: {
@@ -91,14 +36,15 @@ router.post("/signup", async function(req, res) {
       lastName: req.body.lastName,
       email: req.body.email,
       password: req.body.password,
-      profileimage: req.body.profileimage,
-      depop: req.body.depop,
-      eBay: req.body.eBay,
-      facebook: req.body.facebook,
-      instagram: req.body.instagram,
-      grailed: req.body.grailed,
-      stockX: req.body.stockX
+      phone: req.body.phone,
+      gender: req.body.gender
     };
+    if (req.files && req.files["image"]) {
+      var file = req.files["image"];
+      var mimetype = ["image/jpeg", "image/png", "application/pdf"];
+      let fileUpload = await common_helper.fileUpload(mimetype, file);
+      obj.image = file.name;
+    }
 
     let user = await common_helper.find(
       User,
@@ -106,13 +52,28 @@ router.post("/signup", async function(req, res) {
       1
     );
     if (user.status === 1) {
-      res.json({ status: 0, message: "Email is alredy registered" });
-      res.status(global.gConfig.BAD_REQUEST);
+      res
+        .status(global.gConfig.BAD_REQUEST)
+        .json({ status: 0, message: "Email is alredy registered" });
     } else if (user.status === 2) {
       var register_resp = await common_helper.insert(User, obj);
       if (register_resp.status == 0) {
         res.status(global.gConfig.BAD_REQUEST).json(register_resp);
       } else {
+        let mail_resp = await mail_helper.send(
+          "email_confirmation",
+          {
+            to: req.body.email,
+            subject: "Email Confirmation"
+          },
+          {
+            link:
+              // global.gConfig.website_url +
+              // "/email_confirm/" +
+              // register_resp.data._id
+              process.env.FRONTEND_WEBSITE + "emailverify"
+          }
+        );
         res
           .status(global.gConfig.OK_STATUS)
           .json({ message: "You are registered successfully", register_resp });
@@ -122,6 +83,58 @@ router.post("/signup", async function(req, res) {
     res.status(global.gConfig.BAD_REQUEST).json({ message: errors });
   }
 });
+
+/* Register api without email varification */
+// router.post("/signup", async function(req, res) {
+//   var schema = {
+//     email: {
+//       notEmpty: true,
+//       errorMessage: "Email is required"
+//     },
+//     password: {
+//       notEmpty: true,
+//       errorMessage: "Password is required"
+//     }
+//   };
+//   req.checkBody(schema);
+//   var errors = req.validationErrors();
+//   if (!errors) {
+//     var obj = {
+//       firstName: req.body.firstName,
+//       lastName: req.body.lastName,
+//       email: req.body.email,
+//       password: req.body.password,
+//       profileimage: req.body.profileimage,
+//       depop: req.body.depop,
+//       eBay: req.body.eBay,
+//       facebook: req.body.facebook,
+//       instagram: req.body.instagram,
+//       grailed: req.body.grailed,
+//       stockX: req.body.stockX
+//     };
+
+//     let user = await common_helper.find(
+//       User,
+//       { email: req.body.email, isDel: false },
+//       1
+//     );
+//     if (user.status === 1) {
+//       res.json({ status: 0, message: "Email is alredy registered" });
+//       res.status(global.gConfig.BAD_REQUEST);
+//     } else if (user.status === 2) {
+//       var register_resp = await common_helper.insert(User, obj);
+//       if (register_resp.status == 0) {
+//         res.status(global.gConfig.BAD_REQUEST).json(register_resp);
+//       } else {
+//         res
+//           .status(global.gConfig.OK_STATUS)
+//           .json({ message: "You are registered successfully", register_resp });
+//       }
+//     }
+//   } else {
+//     res.status(global.gConfig.BAD_REQUEST).json({ message: errors });
+//   }
+// });
 
 /* Login Api */
 router.post("/login", async (req, res) => {
@@ -152,58 +165,65 @@ router.post("/login", async (req, res) => {
         error: login_resp.error
       });
     } else if (login_resp.status === 1) {
-      // if (login_resp.data.emailVerified == true) {
-      //   if (login_resp.data.isDel == false) {
-      if (
-        bcrypt.compareSync(req.body.password, login_resp.data.password) &&
-        req.body.email.toLowerCase() == login_resp.data.email.toLowerCase()
-      ) {
-        var refreshToken = jwt.sign(
-          { id: login_resp.data._id },
-          global.gConfig.ACCESS_TOKEN_EXPIRE_TIME,
-          {}
-        );
-        let update_resp = await common_helper.update(
-          User,
-          { _id: login_resp.data._id },
-          { refresh_token: refreshToken, last_login: Date.now() }
-        );
-        var LoginJson = {
-          id: login_resp.data._id,
-          email: login_resp.email,
-          role: "user"
-        };
+      if (login_resp.data.emailVerified == true) {
+        if (login_resp.data.isDel == false) {
+          if (
+            bcrypt.compareSync(req.body.password, login_resp.data.password) &&
+            req.body.email.toLowerCase() == login_resp.data.email.toLowerCase()
+          ) {
+            var refreshToken = jwt.sign(
+              { id: login_resp.data._id },
+              global.gConfig.ACCESS_TOKEN_EXPIRE_TIME,
+              {}
+            );
+            let update_resp = await common_helper.update(
+              User,
+              { _id: login_resp.data._id },
+              { refresh_token: refreshToken, last_login: Date.now() }
+            );
+            var LoginJson = {
+              id: login_resp.data._id,
+              email: login_resp.email,
+              role: "user"
+            };
 
-        var token = jwt.sign(
-          LoginJson,
-          global.gConfig.ACCESS_TOKEN_SECRET_KEY,
-          {
-            expiresIn: global.gConfig.ACCESS_TOKEN_EXPIRE_TIME
+            var token = jwt.sign(
+              LoginJson,
+              global.gConfig.ACCESS_TOKEN_SECRET_KEY,
+              {
+                expiresIn: global.gConfig.ACCESS_TOKEN_EXPIRE_TIME
+              }
+            );
+
+            delete login_resp.data.status;
+            delete login_resp.data.password;
+            delete login_resp.data.refresh_token;
+            delete login_resp.data.last_login_date;
+            delete login_resp.data.created_at;
+
+            res.status(global.gConfig.OK_STATUS).json({
+              status: 1,
+              message: "Logged in successful",
+              data: update_resp.data,
+              token: token,
+              refresh_token: refreshToken
+            });
+          } else {
+            res.json({
+              status: 0,
+              message: "Invalid email address or password"
+            });
           }
-        );
-
-        delete login_resp.data.status;
-        delete login_resp.data.password;
-        delete login_resp.data.refresh_token;
-        delete login_resp.data.last_login_date;
-        delete login_resp.data.created_at;
-
-        res.status(global.gConfig.OK_STATUS).json({
-          status: 1,
-          message: "Logged in successful",
-          data: update_resp.data,
-          token: token,
-          refresh_token: refreshToken
-        });
+        } else {
+          res
+            .status(global.gConfig.BAD_REQUEST)
+            .json({ message: "Your account is not active" });
+        }
       } else {
-        res.json({ status: 0, message: "Invalid email address or password" });
+        res
+          .status(global.gConfig.BAD_REQUEST)
+          .json({ message: "Your email is not verified" });
       }
-      //   } else {
-      //     res.status(global.gConfig.BAD_REQUEST).json({ message: "Your account is not active" });
-      //   }
-      // } else {
-      //   res.status(global.gConfig.BAD_REQUEST).json({ message: "Your email is not verified" });
-      // }
     } else {
       res.json({ message: "Your email is not registered" });
     }
@@ -213,28 +233,20 @@ router.post("/login", async (req, res) => {
 });
 
 /* Email Verify Api */
-router.get("/email_verify/:id", async (req, res) => {
-  var user_resp = await common_helper.find(
-    User,
-    { _id: new ObjectId(req.params.id) },
-    1
-  );
+router.post("/email_verify", async (req, res) => {
+  var user_resp = await common_helper.find(User, { _id: req.body.id }, 1);
   if (user_resp.status === 0) {
     res
       .status(global.gConfig.INTERNAL_SERVER_ERROR)
       .json({ status: 0, message: "Error has occured while finding user" });
   } else if (user_resp.status === 2) {
-    res
-      .status(global.gConfig.BAD_REQUEST)
-      .json({ status: 0, message: "Invalid token entered" });
+    res.json({ status: 0, message: "Invalid token entered" });
   } else if (
     user_resp &&
     user_resp.status == 1 &&
     user_resp.data.emailVerified == true
   ) {
-    res
-      .status(global.gConfig.BAD_REQUEST)
-      .json({ message: "Email Already verified" });
+    res.json({ message: "Email Already verified" });
   } else if (
     user_resp &&
     user_resp.status == 1 &&
@@ -290,7 +302,7 @@ router.post("/forgot_password", async (req, res) => {
           subject: "Reset password"
         },
         {
-          reset_link: "http://localhost:8000/resetpassword/"
+          reset_link: process.env.FRONTEND_WEBSITE + "resetpassword/"
         }
       );
       // global.gConfig.website_url + "/reset-password/" + reset_token;

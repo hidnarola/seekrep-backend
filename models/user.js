@@ -32,9 +32,15 @@ const schema = new mongoose.Schema(
     },
     reviews: [
       {
-        type: Schema.Types.ObjectId,
-        ref: "Review"
-      }
+        reviewId: {
+          type: Schema.Types.ObjectId,
+          ref: "Review"
+        }
+      },
+      { rating: { type: Number } },
+      { review: { type: String } },
+      { username: { type: String } },
+      { place: { type: String } }
     ],
     role: { type: String, default: "user" },
     emailVerified: { type: Boolean, default: false },

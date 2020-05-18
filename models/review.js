@@ -5,9 +5,10 @@ const Schema = mongoose.Schema;
 
 const schema = new mongoose.Schema(
   {
-    productName: { type: String, required: true },
-    price: { type: Number, required: true },
-    description: { type: String, required: true },
+    rating: { type: Number, required: true },
+    transactionproof: { type: String },
+    place: { type: String, required: true },
+    review: { type: String, required: true },
     creator: {
       type: Schema.Types.ObjectId,
       ref: "User",
