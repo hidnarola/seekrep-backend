@@ -9,18 +9,24 @@ user_helper.getUserById = async userId => {
         $match: { _id: mongoose.Types.ObjectId(userId) }
       },
       {
-        $unwind: "$reviews"
+        $unwind: {
+          path: "$reviews",
+          preserveNullAndEmptyArrays: true
+        }
       },
       {
         $lookup: {
           from: "reviews",
-          localField: "reviews",
+          localField: "reviews._id",
           foreignField: "_id",
           as: "review_details"
         }
       },
       {
-        $unwind: "$review_details"
+        $unwind: {
+          path: "$review_details",
+          preserveNullAndEmptyArrays: true
+        }
       },
       {
         $group: {
