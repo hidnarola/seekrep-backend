@@ -67,14 +67,14 @@ router.post("/addreview", async function(req, res, next) {
     transactionproof: req.body.transactionproof,
     place: req.body.place,
     review: req.body.review,
-    creator: req.body.id
+    creator: req.body.creator
   });
 
   post
     .save()
     .then(result => {
       console.log("result", result);
-      return User.findById(req.body.id);
+      return User.findById(req.body.creator);
     })
     .then(user => {
       creator = user;
