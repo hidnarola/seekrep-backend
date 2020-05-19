@@ -408,6 +408,70 @@ router.post("/reset_password", async (req, res) => {
   }
 });
 
+router.post("/change_password", async (req, res) => {
+  var schema = {
+    email: {
+      notEmpty: true,
+      errorMessage: "Email is required."
+    },
+    password: {
+      notEmpty: true,
+      errorMessage: "Password is required."
+    }
+  };
+
+  req.checkBody(schema);
+  var errors = req.validationErrors();
+  if (!errors) {
+    try {
+      bcrypt.genSalt(10, (err, salt) => {
+        if (err) {
+          return res
+            .status(global.gConfig.BAD_REQUEST)
+            .json({ status: 0, message: "Server Error" });
+        }
+        bcrypt.hash(req.body.password, salt, async (err, hash) => {
+          if (err) {
+            return res
+              .status(global.gConfig.BAD_REQUEST)
+              .json({ status: 0, message: "Server Error" });
+          }
+          let newPassword = hash;
+          let user = await common_helper.find(User, { email: req.body.email });
+          if (user.status === 1) {
+            if (user && user.data.length > 0) {
+              let updateUser = await common_helper.update(
+                User,
+                user.data[0]._id,
+                {
+                  password: newPassword
+                }
+              );
+              res
+                .status(global.gConfig.OK_STATUS)
+                .json({ status: 1, message: "Password has been changed" });
+            } else {
+              res
+                .status(global.gConfig.OK_STATUS)
+                .json({ status: 0, message: "Invalid email address" });
+            }
+          } else {
+            res
+              .status(global.gConfig.OK_STATUS)
+              .json({ status: 0, message: "Invalid email address" });
+          }
+        });
+      });
+    } catch (error) {
+      res
+        .status(global.gConfig.BAD_REQUEST)
+        .json({ status: 0, message: "Server Error" });
+    }
+  } else {
+    res.status(global.gConfig.BAD_REQUEST).json({ message: errors });
+  }
+});
+
 router.route("/auth/google").post(
   passport.authenticate("google-token", { session: false }),
   function(req, res, next) {
