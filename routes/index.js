@@ -444,7 +444,7 @@ router.route("/auth/google").post(
 // );
 
 router.route("/auth/facebook").post(
-  passport.authenticate("facebook", { session: false }),
+  passport.authenticate("facebookToken", { session: false }),
   function(req, res, next) {
     console.log({ user: req.user });
     if (!req.user) {
@@ -460,19 +460,19 @@ router.route("/auth/facebook").post(
   sendToken
 );
 
-router.get(
-  "/auth/facebook",
-  passport.authenticate("facebook", {
-    profileFields: ["id", "name"]
-  })
-);
+// router.get(
+//   "/auth/facebook",
+//   passport.authenticate("facebook", {
+//     profileFields: ["id", "name"]
+//   })
+// );
 
-router.get(
-  "/auth/facebook/callback",
-  passport.authenticate("facebook"),
-  (req, res) => {
-    //   res.redirect("/profile");
-    console.log("res callback fb", res);
-  }
-);
+// router.get(
+//   "/auth/facebook/callback",
+//   passport.authenticate("facebook"),
+//   (req, res) => {
+//     //   res.redirect("/profile");
+//     console.log("res callback fb", res);
+//   }
+// );
 module.exports = router;
