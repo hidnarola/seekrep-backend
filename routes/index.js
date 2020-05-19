@@ -442,11 +442,12 @@ router.post("/change_password", async (req, res) => {
             if (user && user.data.length > 0) {
               let updateUser = await common_helper.update(
                 User,
-                user.data[0]._id,
+                { _id: user.data[0]._id },
                 {
                   password: newPassword
                 }
               );
+
               res
                 .status(global.gConfig.OK_STATUS)
                 .json({ status: 1, message: "Password has been changed" });
