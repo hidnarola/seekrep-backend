@@ -97,6 +97,7 @@ schema.statics.upsertGoogleUser = function(
           firstName: profile.name.givenName,
           lastName: profile.name.familyName,
           email: profile.emails[0].value,
+          emailVerified: true,
           googleProvider: {
             id: profile.id,
             token: accessToken
@@ -118,7 +119,6 @@ schema.statics.upsertGoogleUser = function(
 
 schema.statics.upsertFbUser = function(accessToken, refreshToken, profile, cb) {
   var that = this;
-  console.log("that", that);
   return this.findOne(
     {
       "facebookProvider.id": profile.id
@@ -127,8 +127,10 @@ schema.statics.upsertFbUser = function(accessToken, refreshToken, profile, cb) {
       // no user was found, lets create a new one
       if (!user) {
         var newUser = new that({
-          fullName: profile.displayName,
+          firstName: profile.name.givenName,
+          lastName: profile.name.familyName,
           email: profile.emails[0].value,
+          emailVerified: true,
           facebookProvider: {
             id: profile.id,
             token: accessToken
