@@ -4,6 +4,7 @@ var ObjectId = require("mongodb").ObjectID;
 
 /* Helper */
 const common_helper = require("../../controller/common");
+const review_helper = require("../../helper/review_helper");
 
 /* Model */
 const User = require("../../models/user");
@@ -67,7 +68,8 @@ router.post("/addreview", async function(req, res, next) {
     transactionproof: req.body.transactionproof,
     place: req.body.place,
     review: req.body.review,
-    creator: req.body.creator
+    creator: req.body.creator,
+    profileReview: req.body.profileReview
   });
 
   post
@@ -194,6 +196,24 @@ router.get("/:id", async function(req, res) {
     } else if (product.status === 2) {
       res.status(global.gConfig.BAD_REQUEST).json(product);
     }
+  } catch (error) {
+    if (error instanceof mongoose.CastError) {
+      next(createError(400, "Invalid Product id"));
+      return;
+    }
+  }
+});
+
+router.post("profileReview/:id", async function(req, res) {
+  try {
+    const profileId = req.params.id;
+    const skip = req.body.start ? req.body.start : 0;
+    const skip = req.body.limit ? req.body.limit : 10;
+    let review = await review_helper.getReviewByProfileId(
+      profileId,
+      skip,
+      limit
+    );
   } catch (error) {
     if (error instanceof mongoose.CastError) {
       next(createError(400, "Invalid Product id"));

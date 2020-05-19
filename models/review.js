@@ -13,6 +13,11 @@ const schema = new mongoose.Schema(
       type: Schema.Types.ObjectId,
       ref: "User",
       required: true
+    },
+    profileReview: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true
     }
   },
 
