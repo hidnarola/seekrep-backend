@@ -94,7 +94,8 @@ schema.statics.upsertGoogleUser = function(
       // no user was found, lets create a new one
       if (!user) {
         var newUser = new that({
-          fullName: profile.displayName,
+          firstName: profile.name.givenName,
+          lastName: profile.name.familyName,
           email: profile.emails[0].value,
           googleProvider: {
             id: profile.id,

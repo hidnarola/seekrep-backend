@@ -411,7 +411,6 @@ router.post("/reset_password", async (req, res) => {
 router.route("/auth/google").post(
   passport.authenticate("google-token", { session: false }),
   function(req, res, next) {
-    console.log("req ===>", req);
     if (!req.user) {
       return res.send(401, "User Not Authenticated");
     }
