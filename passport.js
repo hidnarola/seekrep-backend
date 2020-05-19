@@ -1,5 +1,5 @@
 const User = require("./models/user");
-const FacebookStrategy = require("passport-facebook").Strategy;
+const FacebookTokenStrategy = require("passport-facebook-token");
 const GoogleTokenStrategy = require("passport-google-token").Strategy;
 const config = require("./auth-config");
 
@@ -15,7 +15,8 @@ module.exports = function(passport) {
   });
 
   passport.use(
-    new FacebookStrategy(
+    "facebookToken",
+    new FacebookTokenStrategy(
       {
         ...config.facebookAuth
       },
@@ -24,9 +25,11 @@ module.exports = function(passport) {
           const userFound = await User.upsertFbUser(
             accessToken,
             refreshToken,
-            profile
+            profile,
+            function(err, user) {
+              return done(err, user);
+            }
           );
-
           userFound
             ? done(null, userFound)
             : done(new Error("User Not Found"), null);
