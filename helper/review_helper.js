@@ -42,12 +42,23 @@ review_helper.getReviewByProfileId = async (profileId, skip, limit) => {
               _id: "$creator_details._id",
               firstName: "$creator_details.firstName",
               lastName: "$creator_details.lastName",
-              email: "$creator_details.email"
+              email: "$creator_details.email",
+              profileimage: "$creator_details.profileimage"
             }
           }
         }
       }
     ]);
+    if (data) {
+      console.log("review LOG", data);
+      return {
+        status: 1,
+        message: "data found",
+        data: data
+      };
+    } else {
+      return { status: 2, message: "No data found" };
+    }
   } catch (err) {
     return {
       status: 0,

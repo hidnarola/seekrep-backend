@@ -204,16 +204,25 @@ router.get("/:id", async function(req, res) {
   }
 });
 
-router.post("profileReview/:id", async function(req, res) {
+router.post("/profileReview/:id", async function(req, res) {
   try {
     const profileId = req.params.id;
     const skip = req.body.start ? req.body.start : 0;
-    const skip = req.body.limit ? req.body.limit : 10;
+    const limit = req.body.limit ? req.body.limit : 10;
+    console.log("profileID", profileId);
     let review = await review_helper.getReviewByProfileId(
       profileId,
       skip,
       limit
     );
+    console.log("review", review);
+    if (review.status === 1) {
+      res
+        .status(global.gConfig.OK_STATUS)
+        .json({ message: "profile review", review });
+    } else if (review.status === 2) {
+      res.status(global.gConfig.BAD_REQUEST).json(review);
+    }
   } catch (error) {
     if (error instanceof mongoose.CastError) {
       next(createError(400, "Invalid Product id"));
