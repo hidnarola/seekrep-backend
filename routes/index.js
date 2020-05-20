@@ -71,7 +71,9 @@ router.post("/signup", async function(req, res) {
               // global.gConfig.website_url +
               // "/email_confirm/" +
               // register_resp.data._id
-              process.env.FRONTEND_WEBSITE + "emailverify"
+              process.env.FRONTEND_API_LOCAL +
+              "emailverify/" +
+              register_resp.data._id
           }
         );
         res
@@ -233,8 +235,8 @@ router.post("/login", async (req, res) => {
 });
 
 /* Email Verify Api */
-router.post("/email_verify", async (req, res) => {
-  var user_resp = await common_helper.find(User, { _id: req.body.id }, 1);
+router.post("/email_verify/:id", async (req, res) => {
+  var user_resp = await common_helper.find(User, { _id: req.params.id }, 1);
   if (user_resp.status === 0) {
     res
       .status(global.gConfig.INTERNAL_SERVER_ERROR)
@@ -302,7 +304,8 @@ router.post("/forgot_password", async (req, res) => {
           subject: "Reset password"
         },
         {
-          reset_link: process.env.FRONTEND_WEBSITE + "resetpassword/"
+          reset_link:
+            process.env.FRONTEND_API_LOCAL + "resetpassword/" + reset_token
         }
       );
       // global.gConfig.website_url + "/reset-password/" + reset_token;
