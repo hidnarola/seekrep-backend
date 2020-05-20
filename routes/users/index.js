@@ -109,7 +109,14 @@ router.post("/search", async function(req, res) {
   try {
     const search = req.body.search;
     console.log("search", search);
-    let user = await common_helper.find(User, { firstName: search });
+    let user = null;
+    if (search) {
+      user = await common_helper.find(User, {
+        firstName: new RegExp("^" + search, "i")
+      });
+    } else {
+      user = await common_helper.find(User, {});
+    }
     console.log("user", user);
 
     if (user.status === 1) {
