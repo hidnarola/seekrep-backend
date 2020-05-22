@@ -145,7 +145,7 @@ router.post("/search", async function(req, res) {
 router.post("/alluser", async function(req, res) {
   const page = req.body.pageno || 1;
   let totalItems;
-  const ITEMS_PER_PAGE = 5;
+  const ITEMS_PER_PAGE = req.body.iteam_per_page || 5;
 
   User.find()
     .countDocuments()
@@ -161,10 +161,6 @@ router.post("/alluser", async function(req, res) {
       res.json({
         users: user,
         currentPage: page,
-        hasNextPage: ITEMS_PER_PAGE * page < totalItems,
-        hasPreviousPage: page > 1,
-        nextPage: page + 1,
-        previousPage: page - 1,
         totalPages: Math.ceil(totalItems / ITEMS_PER_PAGE),
         perPageLimit: ITEMS_PER_PAGE
       });

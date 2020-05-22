@@ -2,7 +2,7 @@ const Review = require("../models/review");
 let mongoose = require("mongoose");
 let review_helper = {};
 
-review_helper.getReviewByProfileId = async (profileId, skip, limit) => {
+review_helper.getReviewByProfileId = async (profileId, skip, limit, page) => {
   try {
     let data = await Review.aggregate([
       {
@@ -51,6 +51,7 @@ review_helper.getReviewByProfileId = async (profileId, skip, limit) => {
     ]);
     if (data) {
       console.log("review LOG", data);
+
       return {
         status: 1,
         message: "data found",

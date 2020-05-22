@@ -18,7 +18,8 @@ const schema = new mongoose.Schema(
       type: Schema.Types.ObjectId,
       ref: "User",
       required: true
-    }
+    },
+    avgRating: { type: Number }
   },
 
   { timestamps: true, versionKey: false }

@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 var ObjectId = require("mongodb").ObjectID;
+var lodash = require("lodash");
 
 /* Helper */
 const common_helper = require("../../controller/common");
@@ -61,6 +62,44 @@ const Review = require("../../models/review");
 //   }
 // });
 
+// router.post("/addreview", async function(req, res, next) {
+//   let creator;
+//   const post = new Review({
+//     rating: req.body.rating,
+//     transactionproof: req.body.transactionproof,
+//     place: req.body.place,
+//     review: req.body.review,
+//     creator: req.body.creator,
+//     profileReview: req.body.profileReview
+//   });
+
+//   post
+//     .save()
+//     .then(result => {
+//       console.log("result creator", result);
+//       return User.findById(req.body.creator);
+//     })
+//     .then(user => {
+//       creator = user;
+//       user.reviews.push(post);
+//       return user.save();
+//     })
+//     .then(result => {
+//       res.status(201).json({
+//         status: 1,
+//         message: "Review Added Successfully!",
+//         post: post,
+//         creator: { _id: creator._id }
+//       });
+//     })
+//     .catch(err => {
+//       if (!err.statusCode) {
+//         err.statusCode = 500;
+//       }
+//       next(err);
+//     });
+// });
+
 router.post("/addreview", async function(req, res, next) {
   let creator;
   const post = new Review({
@@ -75,8 +114,8 @@ router.post("/addreview", async function(req, res, next) {
   post
     .save()
     .then(result => {
-      console.log("result", result);
-      return User.findById(req.body.creator);
+      console.log("result creator", result);
+      return User.findById(req.body.profileReview);
     })
     .then(user => {
       creator = user;
@@ -204,22 +243,96 @@ router.get("/:id", async function(req, res) {
   }
 });
 
+router.get("/ratingdetails/:id", async function(req, res) {
+  try {
+    const id = req.params.id;
+    // let product = await common_helper.find(Review, {
+    //   profileReview: id
+    // });
+    let ratesdetail = await Review.find({ profileReview: id }).select(
+      "-transactionproof -place -review -creator -profileReview -createdAt -updatedAt -_id"
+    );
+
+    if (ratesdetail) {
+      let sumofrat = ratesdetail.reduce(function(cnt, o) {
+        return cnt + o.rating;
+      }, 0);
+      let arr_length = ratesdetail.length;
+
+      let avg = Math.round(sumofrat / arr_length);
+
+      let getonestar = lodash.filter(ratesdetail, { rating: 1 });
+      let gettwostar = lodash.filter(ratesdetail, { rating: 2 });
+      let getthreestar = lodash.filter(ratesdetail, {
+        rating: 3
+      });
+      let getfourstar = lodash.filter(ratesdetail, { rating: 4 });
+      let getfivestar = lodash.filter(ratesdetail, { rating: 5 });
+
+      let onestar = Math.round((getonestar.length * 100) / arr_length);
+      let twostar = Math.round((gettwostar.length * 100) / arr_length);
+      let threestar = Math.round((getthreestar.length * 100) / arr_length);
+      let fourstar = Math.round((getfourstar.length * 100) / arr_length);
+      let fivestar = Math.round((getfivestar.length * 100) / arr_length);
+
+      res.status(global.gConfig.OK_STATUS).json({
+        status: 1,
+        message: "reviews details found",
+        reviewDetail: {
+          totalreviews: arr_length,
+          average: avg,
+          onestar: onestar,
+          twostar: twostar,
+          threestar: threestar,
+          fourstar: fourstar,
+          fivestar: fivestar
+        }
+      });
+    } else {
+      res
+        .status(global.gConfig.BAD_REQUEST)
+        .json({ status: 0, message: "review id is invalid", ratesdetail });
+    }
+  } catch (error) {
+    if (error) {
+      return error;
+    }
+  }
+});
+
 router.post("/profileReview/:id", async function(req, res) {
   try {
     const profileId = req.params.id;
     const skip = req.body.start ? req.body.start : 0;
-    const limit = req.body.limit ? req.body.limit : 10;
+    const limit = req.body.limit ? req.body.limit : 5;
+    const page = req.body.page ? req.body.page : 1;
+
     console.log("profileID", profileId);
     let review = await review_helper.getReviewByProfileId(
       profileId,
       skip,
-      limit
+      limit,
+      page
     );
-    console.log("review", review);
+    console.log("review data", review);
+    const totalrecord = await common_helper.count(Review, {
+      profileReview: profileId
+    });
+    // const totalrecord = review.length;
+    console.log("review total", totalrecord);
+    let requestData = {
+      totalRecord: totalrecord.recordsTotal,
+      limit: limit,
+      totalPages: Math.ceil(totalrecord.recordsTotal / limit),
+      page: page,
+      review
+    };
+    console.log("requestData", requestData);
+
     if (review.status === 1) {
       res
         .status(global.gConfig.OK_STATUS)
-        .json({ message: "profile review", review });
+        .json({ message: "profile review", requestData });
     } else if (review.status === 2) {
       res.status(global.gConfig.BAD_REQUEST).json(review);
     }
