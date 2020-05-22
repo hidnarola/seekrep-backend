@@ -71,7 +71,7 @@ router.post("/signup", async function(req, res) {
               // global.gConfig.website_url +
               // "/email_confirm/" +
               // register_resp.data._id
-              process.env.FRONTEND_API_LOCAL +
+              process.env.FRONTEND_WEBSITE +
               "emailverify/" +
               register_resp.data._id
           }
@@ -305,7 +305,7 @@ router.post("/forgot_password", async (req, res) => {
         },
         {
           reset_link:
-            process.env.FRONTEND_API_LOCAL + "resetpassword/" + reset_token
+            process.env.FRONTEND_WEBSITE + "resetpassword/" + reset_token
         }
       );
       // global.gConfig.website_url + "/reset-password/" + reset_token;
