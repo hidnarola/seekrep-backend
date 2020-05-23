@@ -73,8 +73,6 @@ router.post("/editprofiledata", async function(req, res) {
     var obj = {
       firstName: req.body.firstName,
       lastName: req.body.lastName,
-      email: req.body.email,
-      password: req.body.password,
       countryname: req.body.countryname,
       profileimage: req.body.profileimage,
       depop: req.body.depop,
@@ -88,19 +86,20 @@ router.post("/editprofiledata", async function(req, res) {
       const id = req.body.id;
       const updates = req.body;
       const options = { new: true };
+      console.log("id edited", id);
+      console.log("updates", updates);
 
       const result = await User.findByIdAndUpdate(id, updates, options);
       if (!result) {
-        throw createError(404, "Product does not exist");
+        res.json({ status: 0, message: "user does not exist" });
+      } else {
+        res.json({ status: 1, message: "data edited successfully", result });
       }
-      res.send(result);
     } catch (error) {
       console.log(error.message);
-      if (error instanceof mongoose.CastError) {
-        return next(createError(400, "Invalid Product Id"));
+      if (error) {
+        return error;
       }
-
-      next(error);
     }
   }
 });

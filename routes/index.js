@@ -52,13 +52,11 @@ router.post("/signup", async function(req, res) {
       1
     );
     if (user.status === 1) {
-      res
-        .status(global.gConfig.BAD_REQUEST)
-        .json({ status: 0, message: "Email is alredy registered" });
+      res.json({ status: 0, message: "Email is alredy registered" });
     } else if (user.status === 2) {
       var register_resp = await common_helper.insert(User, obj);
       if (register_resp.status == 0) {
-        res.status(global.gConfig.BAD_REQUEST).json(register_resp);
+        res.json(register_resp);
       } else {
         let mail_resp = await mail_helper.send(
           "email_confirmation",
@@ -76,13 +74,15 @@ router.post("/signup", async function(req, res) {
               register_resp.data._id
           }
         );
-        res
-          .status(global.gConfig.OK_STATUS)
-          .json({ message: "You are registered successfully", register_resp });
+        res.status(global.gConfig.OK_STATUS).json({
+          message:
+            "You are registered successfully and verification link is send to your email id",
+          register_resp
+        });
       }
     }
   } else {
-    res.status(global.gConfig.BAD_REQUEST).json({ message: errors });
+    res.json({ message: errors });
   }
 });
 

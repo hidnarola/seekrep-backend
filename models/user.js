@@ -10,6 +10,7 @@ const schema = new mongoose.Schema(
     firstName: String,
     lastName: String,
     profileimage: String,
+    countryname: String,
     depop: String,
     eBay: String,
     facebook: String,
