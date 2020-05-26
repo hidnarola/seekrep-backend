@@ -62,4 +62,67 @@ user_helper.getUserById = async userId => {
   }
 };
 
+user_helper.getUsers = async (skip, limit, page) => {
+  try {
+    let data = await User.aggregate([
+      {
+        $match: {}
+      },
+      { $skip: skip },
+      { $limit: limit },
+      {
+        $unwind: {
+          path: "$reviews",
+          preserveNullAndEmptyArrays: true
+        }
+      },
+      {
+        $lookup: {
+          from: "reviews",
+          localField: "reviews._id",
+          foreignField: "_id",
+          as: "review_details"
+        }
+      },
+      {
+        $unwind: {
+          path: "$review_details",
+          preserveNullAndEmptyArrays: true
+        }
+      },
+      {
+        $group: {
+          _id: "$_id",
+          reviews: { $first: "$reviews" },
+          role: { $first: "$role" },
+          emailVerified: { $first: "$emailVerified" },
+          isDel: { $first: "$isDel" },
+          firstName: { $first: "$firstName" },
+          lastName: { $first: "$lastName" },
+          profileimage: { $first: "$profileimage" },
+          email: { $first: "$email" },
+          password: { $first: "$password" },
+          createdAt: { $first: "$createdAt" },
+          reviewDetails: { $addToSet: "$review_details" },
+          avgRating: { $avg: "$review_details.rating" }
+        }
+      }
+    ]);
+    if (data) {
+      return {
+        data: data,
+        totalrecods: data.length
+      };
+    } else {
+      return { data: null };
+    }
+  } catch (err) {
+    return {
+      status: 0,
+      message: "Error occurred while fetching data",
+      error: err
+    };
+  }
+};
+
 module.exports = user_helper;

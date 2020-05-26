@@ -169,6 +169,42 @@ router.post("/alluser", async function(req, res) {
     });
 });
 
+router.post("/alluserreview", async function(req, res) {
+  try {
+    const ITEMS_PER_PAGE = 5;
+    const page = req.body.page ? req.body.page : 1;
+    const skip = (page - 1) * ITEMS_PER_PAGE;
+    const limit = req.body.limit ? req.body.limit : 5;
+    var alluser = await user_helper.getUsers(skip, limit);
+    console.log("all user", alluser);
+    totalrecords = alluser.totalrecods;
+
+    // const totalrecord = await common_helper.count(Review, { alluser });
+    console.log("recordsTotal", totalrecords);
+
+    let requestData = {
+      limit: limit,
+      totalPages: Math.ceil(alluser.totalrecods / limit),
+      page: page,
+      alluser
+    };
+    // console.log("requestData", requestData);
+    if (alluser) {
+      res
+        .status(global.gConfig.OK_STATUS)
+        .json({ status: "1", message: "found all user", requestData });
+    } else {
+      res
+        .status(global.gConfig.BAD_REQUEST)
+        .json({ status: "2", message: "not found users" });
+    }
+  } catch (error) {
+    if (error) {
+      return error;
+    }
+  }
+});
+
 // router.get("/alluser", async function(req, res) {
 //   console.log("in list api");
 //   var alluser = await User.find({});
