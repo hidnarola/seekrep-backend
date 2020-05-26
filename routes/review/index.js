@@ -303,9 +303,10 @@ router.get("/ratingdetails/:id", async function(req, res) {
 router.post("/profileReview/:id", async function(req, res) {
   try {
     const profileId = req.params.id;
-    const skip = req.body.start ? req.body.start : 0;
-    const limit = req.body.limit ? req.body.limit : 5;
+    const ITEMS_PER_PAGE = 5;
     const page = req.body.page ? req.body.page : 1;
+    const skip = (page - 1) * ITEMS_PER_PAGE;
+    const limit = req.body.limit ? req.body.limit : 5;
 
     console.log("profileID", profileId);
     let review = await review_helper.getReviewByProfileId(
@@ -337,9 +338,8 @@ router.post("/profileReview/:id", async function(req, res) {
       res.status(global.gConfig.BAD_REQUEST).json(review);
     }
   } catch (error) {
-    if (error instanceof mongoose.CastError) {
-      next(createError(400, "Invalid Product id"));
-      return;
+    if (error) {
+      return error;
     }
   }
 });
