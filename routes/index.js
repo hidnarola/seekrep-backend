@@ -17,7 +17,7 @@ const mail_helper = require("../controller/mail");
 const User = require("../models/user");
 
 /* Register Api */
-router.post("/signup", async function(req, res) {
+router.post("/signup", async function (req, res) {
   var schema = {
     email: {
       notEmpty: true,
@@ -223,7 +223,7 @@ router.post("/login", async (req, res) => {
         }
       } else {
         res
-          .status(global.gConfig.BAD_REQUEST)
+          .status(global.gConfig.OK_STATUS)
           .json({ message: "Your email is not verified" });
       }
     } else {
@@ -478,7 +478,7 @@ router.post("/change_password", async (req, res) => {
 
 router.route("/auth/google").post(
   passport.authenticate("google-token", { session: false }),
-  function(req, res, next) {
+  function (req, res, next) {
     if (!req.user) {
       return res.send(401, "User Not Authenticated");
     }
@@ -512,7 +512,7 @@ router.route("/auth/google").post(
 
 router.route("/auth/facebook").post(
   passport.authenticate("facebookToken", { session: false }),
-  function(req, res, next) {
+  function (req, res, next) {
     console.log({ user: req.user });
     if (!req.user) {
       return res.send(401, "User Not Authenticated");

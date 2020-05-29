@@ -37,6 +37,19 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(expressValidator());
 app.use(cors());
 
+
+mongoose
+  .connect(process.env.URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  })
+  .then(() => {
+    console.info(`DB connected Successfully on ${process.env.URI}`);
+  })
+  .catch(() => {
+    console.error("DB connection failed");
+  });
+
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
@@ -47,6 +60,13 @@ app.use((req, res, next) => {
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept"
   );
+
+  // res.setHeader('Access-Control-Allow-Origin', '*')
+  // res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+  // res.setHeader('Access-Control-Allow-Headers', 'x-access-token,content-type');
+  // res.setHeader('Access-Control-Allow-Credentials', true);
+
+
   // res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
   if (req.method === "OPTIONS") {
     return res.sendStatus(200);
@@ -118,25 +138,25 @@ global.gConfig = finalConfig;
 app.use("/images", express.static(path.join(__dirname, "public/images")));
 
 // mongoose db connection
-mongoose
-  .connect(process.env.URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-  })
-  .then(() => {
-    console.info(`DB connected Successfully on ${process.env.URI}`);
-  })
-  .catch(() => {
-    console.error("DB connection failed");
-  });
+// mongoose
+//   .connect(process.env.URI, {
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true
+//   })
+//   .then(() => {
+//     console.info(`DB connected Successfully on ${process.env.URI}`);
+//   })
+//   .catch(() => {
+//     console.error("DB connection failed");
+//   });
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : {};

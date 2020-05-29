@@ -14,7 +14,9 @@
     "MEDIA_ERROR_STATUS": 415,
     "VALIDATION_FAILURE_STATUS": 417,
     "DATABASE_ERROR_STATUS": 422,
-    "INTERNAL_SERVER_ERROR": 500
+    "INTERNAL_SERVER_ERROR": 500,
+    "ITEMS_PER_PAGE": 10,
+    "LIMIT": 10
   },
   "production": {
     "config_id": "production",

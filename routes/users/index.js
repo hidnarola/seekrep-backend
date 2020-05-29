@@ -24,7 +24,7 @@ const User = require("../../models/user");
 //   }
 // });
 
-router.get("/sellerprofile/:id", async function(req, res) {
+router.get("/sellerprofile/:id", async function (req, res) {
   try {
     // console.log("ObjectId(req.userInfo.id)", ObjectId(req.userInfo.id));
     const id = req.params.id;
@@ -46,7 +46,7 @@ router.get("/sellerprofile/:id", async function(req, res) {
   }
 });
 
-router.post("/editprofile", async function(req, res) {
+router.post("/editprofile", async function (req, res) {
   try {
     const id = req.body.userId;
     console.log("id", id);
@@ -67,7 +67,7 @@ router.post("/editprofile", async function(req, res) {
   }
 });
 
-router.post("/editprofiledata", async function(req, res) {
+router.post("/editprofiledata", async function (req, res) {
   var errors = req.validationErrors();
   if (!errors) {
     var obj = {
@@ -90,6 +90,7 @@ router.post("/editprofiledata", async function(req, res) {
       console.log("updates", updates);
 
       const result = await User.findByIdAndUpdate(id, updates, options);
+      // const result = await User.findByIdAndUpdate(id, updates);
       if (!result) {
         res.json({ status: 0, message: "user does not exist" });
       } else {
@@ -104,7 +105,7 @@ router.post("/editprofiledata", async function(req, res) {
   }
 });
 
-router.post("/search", async function(req, res) {
+router.post("/search", async function (req, res) {
   try {
     const search = req.body.search;
     console.log("search", search);
@@ -141,7 +142,7 @@ router.post("/search", async function(req, res) {
   }
 });
 
-router.post("/alluser", async function(req, res) {
+router.post("/alluser", async function (req, res) {
   const page = req.body.pageno || 1;
   let totalItems;
   const ITEMS_PER_PAGE = req.body.iteam_per_page || 5;
@@ -169,13 +170,15 @@ router.post("/alluser", async function(req, res) {
     });
 });
 
-router.post("/alluserreview", async function(req, res) {
+router.post("/alluserreview", async function (req, res) {
   try {
-    const ITEMS_PER_PAGE = 5;
+    // const ITEMS_PER_PAGE = 5;
+    const ITEMS_PER_PAGE = global.gConfig.ITEMS_PER_PAGE;
     const page = req.body.page ? req.body.page : 1;
+    const search = req.body.searchText ? req.body.searchText : null; // DM
     const skip = (page - 1) * ITEMS_PER_PAGE;
-    const limit = req.body.limit ? req.body.limit : 5;
-    var alluser = await user_helper.getUsers(skip, limit);
+    const limit = req.body.limit ? req.body.limit : global.gConfig.LIMIT; // 5
+    var alluser = await user_helper.getUsers(skip, limit, search);
     console.log("all user", alluser);
     totalrecords = alluser.totalrecods;
 
