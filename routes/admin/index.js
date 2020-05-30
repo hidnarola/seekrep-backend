@@ -8,6 +8,7 @@ const user_helper = require("../../helper/user_helper");
 
 /* Model */
 const User = require("../../models/user");
+const Review = require("../../models/review");
 
 router.post("/allusersellers", async function(req, res) {
   const page = req.body.pageno || 1;
@@ -160,5 +161,67 @@ router.post("/edituserdata", async function(req, res) {
     }
   }
 });
+
+router.delete("/deleteuser/:id", async function(req, res) {
+  try {
+    const id = req.params.id;
+    const result = await User.findByIdAndDelete(id);
+    if (!result) {
+      throw createError(404, "User does not exist.");
+    }
+    res.send({
+      message: "Record deleted successfully.",
+      data: result,
+      status: 1
+    });
+  } catch (error) {
+    console.log(error.message);
+    if (error instanceof mongoose.CastError) {
+      next(createError(400, "Invalid user id"));
+      return;
+    }
+    next(error);
+  }
+});
+
+// router.post("/allreviews", async function(req, res) {
+//   try {
+//     // const profileId = req.params.id;
+//     // const ITEMS_PER_PAGE = 5;
+//     const ITEMS_PER_PAGE = global.gConfig.ITEMS_PER_PAGE;
+//     const page = req.body.page ? req.body.page : 1;
+//     const skip = (page - 1) * ITEMS_PER_PAGE;
+//     const limit = req.body.limit ? req.body.limit : global.gConfig.LIMIT; //5;
+
+//     console.log("profileID", profileId);
+//     let review = await review_helper.getAllReviews(skip, limit, page);
+//     console.log("review data", review);
+//     const totalrecord = await common_helper.count(Review, {
+//       profileReview: profileId
+//     });
+//     // const totalrecord = review.length;
+//     console.log("review total", totalrecord);
+//     let requestData = {
+//       totalRecord: totalrecord.recordsTotal,
+//       limit: limit,
+//       totalPages: Math.ceil(totalrecord.recordsTotal / limit),
+//       page: page,
+//       review
+//     };
+//     console.log("requestData", requestData);
+
+//     if (review.status === 1) {
+//       res
+//         .status(global.gConfig.OK_STATUS)
+//         .json({ message: "profile review", requestData });
+//     } else if (review.status === 2) {
+//       res.status(global.gConfig.BAD_REQUEST).json(review);
+//     }
+//   } catch (error) {
+//     if (error) {
+//       return error;
+//     }
+//   }
+// });
 
 module.exports = router;
