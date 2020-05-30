@@ -39,6 +39,12 @@ user_helper.getUserById = async userId => {
           lastName: { $first: "$lastName" },
           email: { $first: "$email" },
           password: { $first: "$password" },
+          depop: { $first: "$depop" },
+          eBay: { $first: "$eBay" },
+          facebook: { $first: "$facebook" },
+          instagram: { $first: "$instagram" },
+          grailed: { $first: "$grailed" },
+          profileimage: { $first: "$profileimage" },
           createdAt: { $first: "$createdAt" },
           reviewDetails: { $addToSet: "$review_details" }
         }
