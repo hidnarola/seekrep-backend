@@ -123,42 +123,42 @@ router.get("/edituser/:id", async function(req, res) {
   }
 });
 
-// router.post("/edituserdata", async function(req, res) {
-//   var errors = req.validationErrors();
-//   if (!errors) {
-//     var obj = {
-//       firstName: req.body.firstName,
-//       lastName: req.body.lastName,
-//       email: req.body.email,
-//       //   countryname: req.body.countryname,
-//       //   profileimage: req.body.profileimage,
-//       depop: req.body.depop,
-//       eBay: req.body.eBay,
-//       facebook: req.body.facebook,
-//       instagram: req.body.instagram,
-//       grailed: req.body.grailed,
-//       stockX: req.body.stockX
-//     };
-//     try {
-//       const id = req.body.id;
-//       const updates = req.body;
-//       const options = { new: true };
-//       console.log("id edited", id);
-//       console.log("updates", updates);
+router.post("/edituserdata", async function(req, res) {
+  var errors = req.validationErrors();
+  if (!errors) {
+    var obj = {
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      email: req.body.email,
+      //   countryname: req.body.countryname,
+      //   profileimage: req.body.profileimage,
+      depop: req.body.depop,
+      eBay: req.body.eBay,
+      facebook: req.body.facebook,
+      instagram: req.body.instagram,
+      grailed: req.body.grailed,
+      stockX: req.body.stockX
+    };
+    try {
+      const id = req.body.id;
+      const updates = req.body;
+      const options = { new: true };
+      console.log("id edited", id);
+      console.log("updates", updates);
 
-//       const result = await User.findByIdAndUpdate(id, updates, options);
-//       if (!result) {
-//         res.json({ status: 0, message: "user does not exist" });
-//       } else {
-//         res.json({ status: 1, message: "data edited successfully", result });
-//       }
-//     } catch (error) {
-//       console.log(error.message);
-//       if (error) {
-//         return error;
-//       }
-//     }
-//   }
-// });
+      const result = await User.findByIdAndUpdate(id, updates, options);
+      if (!result) {
+        res.json({ status: 0, message: "user does not exist" });
+      } else {
+        res.json({ status: 1, message: "data edited successfully", result });
+      }
+    } catch (error) {
+      console.log(error.message);
+      if (error) {
+        return error;
+      }
+    }
+  }
+});
 
 module.exports = router;
