@@ -100,7 +100,7 @@ const Review = require("../../models/review");
 //     });
 // });
 
-router.post("/addreview", async function (req, res, next) {
+router.post("/addreview", async function(req, res, next) {
   let creator;
   const post = new Review({
     rating: req.body.rating,
@@ -138,7 +138,7 @@ router.post("/addreview", async function (req, res, next) {
     });
 });
 
-router.put("/editproduct/:id", async function (req, res) {
+router.put("/editproduct/:id", async function(req, res) {
   try {
     const id = req.params.id;
     const updates = req.body;
@@ -178,7 +178,7 @@ router.put("/editproduct/:id", async function (req, res) {
   //   }
 });
 
-router.delete("/deletproduct/:id", async function (req, res) {
+router.delete("/deletproduct/:id", async function(req, res) {
   try {
     const id = req.params.id;
     const result = await Review.findByIdAndDelete(id);
@@ -211,7 +211,7 @@ router.delete("/deletproduct/:id", async function (req, res) {
   //     res.status(global.gConfig.BAD_REQUEST).json({ message: errors });
   //   }
 });
-router.get("/list", async function (req, res) {
+router.get("/list", async function(req, res) {
   console.log("in list api");
   var allproduct = await Review.find({});
   console.log("all product", allproduct);
@@ -224,7 +224,7 @@ router.get("/list", async function (req, res) {
   }
 });
 
-router.get("/:id", async function (req, res) {
+router.get("/:id", async function(req, res) {
   try {
     const id = req.params.id;
     let product = await common_helper.find(Review, { _id: id }, 1);
@@ -243,7 +243,7 @@ router.get("/:id", async function (req, res) {
   }
 });
 
-router.get("/ratingdetails/:id", async function (req, res) {
+router.get("/ratingdetails/:id", async function(req, res) {
   try {
     const id = req.params.id;
     // let product = await common_helper.find(Review, {
@@ -254,7 +254,7 @@ router.get("/ratingdetails/:id", async function (req, res) {
     );
 
     if (ratesdetail) {
-      let sumofrat = ratesdetail.reduce(function (cnt, o) {
+      let sumofrat = ratesdetail.reduce(function(cnt, o) {
         return cnt + o.rating;
       }, 0);
       let arr_length = ratesdetail.length;
@@ -300,14 +300,14 @@ router.get("/ratingdetails/:id", async function (req, res) {
   }
 });
 
-router.post("/profileReview/:id", async function (req, res) {
+router.post("/profileReview/:id", async function(req, res) {
   try {
     const profileId = req.params.id;
     // const ITEMS_PER_PAGE = 5;
-    const ITEMS_PER_PAGE = global.gConfig.ITEMS_PER_PAGE;;
+    const ITEMS_PER_PAGE = global.gConfig.ITEMS_PER_PAGE;
     const page = req.body.page ? req.body.page : 1;
     const skip = (page - 1) * ITEMS_PER_PAGE;
-    const limit = req.body.limit ? req.body.limit : global.gConfig.LIMIT;//5;
+    const limit = req.body.limit ? req.body.limit : global.gConfig.LIMIT; //5;
 
     console.log("profileID", profileId);
     let review = await review_helper.getReviewByProfileId(

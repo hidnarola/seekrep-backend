@@ -45,6 +45,7 @@ const schema = new mongoose.Schema(
     ],
     role: { type: String, default: "user" },
     emailVerified: { type: Boolean, default: false },
+    profileVerified: { type: Boolean, default: false },
     isDel: { type: Boolean, default: false }
   },
   { timestamps: true, versionKey: false }

@@ -17,7 +17,7 @@ const mail_helper = require("../controller/mail");
 const User = require("../models/user");
 
 /* Register Api */
-router.post("/signup", async function (req, res) {
+router.post("/signup", async function(req, res) {
   var schema = {
     email: {
       notEmpty: true,
@@ -279,13 +279,9 @@ router.post("/forgot_password", async (req, res) => {
   if (!errors) {
     var user = await common_helper.find(User, { email: req.body.email }, 1);
     if (user.status === 0) {
-      res
-        .status(config.INTERNAL_SERVER_ERROR)
-        .json({ status: 0, message: "Error while finding email" });
+      res.json({ status: 0, message: "Error while finding email" });
     } else if (user.status === 2) {
-      res
-        .status(config.BAD_REQUEST)
-        .json({ status: 0, message: "No user available with given email" });
+      res.json({ status: 0, message: "No user available with given email" });
     } else if (user.status === 1) {
       var reset_token = Buffer.from(
         jwt.sign(
@@ -313,7 +309,7 @@ router.post("/forgot_password", async (req, res) => {
       console.log("reset_token", reset_token);
 
       if (mail_resp.status === 0) {
-        res.status(global.gConfig.INTERNAL_SERVER_ERROR).json({
+        res.json({
           status: 0,
           message: "Error occured while sending mail",
           error: mail_resp.error
@@ -354,13 +350,9 @@ router.post("/reset_password", async (req, res) => {
         async (err, decoded) => {
           if (err) {
             if (err.name === "TokenExpiredError") {
-              res
-                .status(global.gConfig.BAD_REQUEST)
-                .json({ status: 0, message: "Link has been expired" });
+              res.json({ status: 0, message: "Link has been expired" });
             } else {
-              res
-                .status(global.gConfig.BAD_REQUEST)
-                .json({ status: 0, message: "Invalid token sent" });
+              res.json({ status: 0, message: "Invalid token sent" });
             }
           } else {
             let decodeId = mongoose.Types.ObjectId(decoded._id);
@@ -377,12 +369,12 @@ router.post("/reset_password", async (req, res) => {
                   { password: bcrypt.hashSync(req.body.password, saltRounds) }
                 );
                 if (update_resp.status === 0) {
-                  res.status(global.gConfig.INTERNAL_SERVER_ERROR).json({
+                  res.json({
                     status: 0,
                     message: "Error occured while verifying user's email"
                   });
                 } else if (update_resp.status === 2) {
-                  res.status(global.gConfig.BAD_REQUEST).json({
+                  res.json({
                     status: 0,
                     message: "Error occured while reseting password of user"
                   });
@@ -478,7 +470,7 @@ router.post("/change_password", async (req, res) => {
 
 router.route("/auth/google").post(
   passport.authenticate("google-token", { session: false }),
-  function (req, res, next) {
+  function(req, res, next) {
     if (!req.user) {
       return res.send(401, "User Not Authenticated");
     }
@@ -512,7 +504,7 @@ router.route("/auth/google").post(
 
 router.route("/auth/facebook").post(
   passport.authenticate("facebookToken", { session: false }),
-  function (req, res, next) {
+  function(req, res, next) {
     console.log({ user: req.user });
     if (!req.user) {
       return res.send(401, "User Not Authenticated");

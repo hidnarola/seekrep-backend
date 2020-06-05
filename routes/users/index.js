@@ -30,7 +30,7 @@ router.get("/sellerprofile/:id", async function(req, res) {
     const id = req.params.id;
     console.log("id", id);
     let user = await user_helper.getUserById(id);
-    console.log("user", user);
+    console.log("seller user", user);
     if (user.status === 1) {
       res
         .status(global.gConfig.OK_STATUS)
