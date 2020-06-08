@@ -235,6 +235,35 @@ router.post("/login", async (req, res) => {
 });
 
 /* Email Verify Api */
+// router.post("/email_verify/:id", async (req, res) => {
+//   var user_resp = await common_helper.find(User, { _id: req.params.id }, 1);
+//   if (user_resp.status === 0) {
+//     res
+//       .status(global.gConfig.INTERNAL_SERVER_ERROR)
+//       .json({ status: 0, message: "Error has occured while finding user" });
+//   } else if (user_resp.status === 2) {
+//     res.json({ status: 0, message: "Invalid token entered" });
+//   } else if (
+//     user_resp &&
+//     user_resp.status == 1 &&
+//     user_resp.data.emailVerified == true
+//   ) {
+//     res.json({ message: "Email Already verified" });
+//   } else if (
+//     user_resp &&
+//     user_resp.status == 1 &&
+//     user_resp.data.emailVerified == false
+//   ) {
+//     var user_update_resp = await User.updateOne(
+//       { _id: new ObjectId(user_resp.data._id) },
+//       { $set: { emailVerified: true } }
+//     );
+//   }
+//   res
+//     .status(global.gConfig.OK_STATUS)
+//     .json({ status: 1, message: "Email has been verified" });
+// });
+
 router.post("/email_verify/:id", async (req, res) => {
   var user_resp = await common_helper.find(User, { _id: req.params.id }, 1);
   if (user_resp.status === 0) {
@@ -258,10 +287,21 @@ router.post("/email_verify/:id", async (req, res) => {
       { _id: new ObjectId(user_resp.data._id) },
       { $set: { emailVerified: true } }
     );
+    console.log("user_update_resp", user_update_resp);
+    var token = jwt.sign(
+      user_update_resp,
+      global.gConfig.ACCESS_TOKEN_SECRET_KEY,
+      {
+        expiresIn: global.gConfig.ACCESS_TOKEN_EXPIRE_TIME
+      }
+    );
   }
-  res
-    .status(global.gConfig.OK_STATUS)
-    .json({ status: 1, message: "Email has been verified" });
+  res.status(global.gConfig.OK_STATUS).json({
+    status: 1,
+    message: "Email has been verified",
+    token: token,
+    id: user_resp.data._id
+  });
 });
 
 /* forgot password Api */

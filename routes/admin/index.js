@@ -230,9 +230,9 @@ router.post("/edituserdata", async function(req, res) {
 
       const result = await User.findByIdAndUpdate(id, updates, options);
       if (!result) {
-        res.json({ status: 0, message: "user does not exist" });
+        res.json({ status: 0, message: "User Does Not Exist" });
       } else {
-        res.json({ status: 1, message: "data edited successfully", result });
+        res.json({ status: 1, message: "Data Edited Successfully", result });
       }
     } catch (error) {
       console.log(error.message);

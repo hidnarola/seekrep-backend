@@ -92,9 +92,9 @@ router.post("/editprofiledata", async function(req, res) {
       const result = await User.findByIdAndUpdate(id, updates, options);
       // const result = await User.findByIdAndUpdate(id, updates);
       if (!result) {
-        res.json({ status: 0, message: "user does not exist" });
+        res.json({ status: 0, message: "User Does Not Exist" });
       } else {
-        res.json({ status: 1, message: "data edited successfully", result });
+        res.json({ status: 1, message: "Data Edited Successfully", result });
       }
     } catch (error) {
       console.log(error.message);
@@ -131,7 +131,7 @@ router.post("/search", async function(req, res) {
       } else {
         res
           .status(global.gConfig.BAD_REQUEST)
-          .json({ status: "2", message: "not found users" });
+          .json({ status: "2", message: "Not Found Users" });
       }
     }
   } catch (error) {
