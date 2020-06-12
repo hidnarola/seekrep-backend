@@ -47,8 +47,6 @@ module.exports = function(passport) {
         clientSecret: config.googleAuth.clientSecret
       },
       function(accessToken, refreshToken, profile, done) {
-        console.log("profile back", profile);
-
         User.upsertGoogleUser(accessToken, refreshToken, profile, function(
           err,
           user

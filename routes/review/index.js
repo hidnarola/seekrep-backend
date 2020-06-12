@@ -114,7 +114,6 @@ router.post("/addreview", async function(req, res, next) {
   post
     .save()
     .then(result => {
-      console.log("result creator", result);
       return User.findById(req.body.profileReview);
     })
     .then(user => {
@@ -150,7 +149,6 @@ router.put("/editproduct/:id", async function(req, res) {
     }
     res.send(result);
   } catch (error) {
-    console.log(error.message);
     if (error instanceof mongoose.CastError) {
       return next(createError(400, "Invalid Product Id"));
     }
@@ -187,7 +185,6 @@ router.delete("/deletproduct/:id", async function(req, res) {
     }
     res.send({ message: "Record deleted successfully.", data: result });
   } catch (error) {
-    console.log(error.message);
     if (error instanceof mongoose.CastError) {
       next(createError(400, "Invalid Product id"));
       return;
@@ -212,9 +209,8 @@ router.delete("/deletproduct/:id", async function(req, res) {
   //   }
 });
 router.get("/list", async function(req, res) {
-  console.log("in list api");
   var allproduct = await Review.find({});
-  console.log("all product", allproduct);
+
   if (allproduct) {
     res
       .status(global.gConfig.OK_STATUS)
@@ -309,19 +305,18 @@ router.post("/profileReview/:id", async function(req, res) {
     const skip = (page - 1) * ITEMS_PER_PAGE;
     const limit = req.body.limit ? req.body.limit : global.gConfig.LIMIT; //5;
 
-    console.log("profileID", profileId);
     let review = await review_helper.getReviewByProfileId(
       profileId,
       skip,
       limit,
       page
     );
-    console.log("review data", review);
+
     const totalrecord = await common_helper.count(Review, {
       profileReview: profileId
     });
     // const totalrecord = review.length;
-    console.log("review total", totalrecord);
+
     let requestData = {
       totalRecord: totalrecord.recordsTotal,
       limit: limit,

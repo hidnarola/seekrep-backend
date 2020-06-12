@@ -72,6 +72,9 @@ user_helper.getUserById = async userId => {
 // user_helper.getUsers = async (skip, limit, page) => {
 user_helper.getUsers = async (skip, limit, search) => {
   var defaultQuery = [
+    {
+      $match: {}
+    },
     { $skip: skip },
     { $limit: limit },
     {
@@ -127,8 +130,8 @@ user_helper.getUsers = async (skip, limit, search) => {
     let data = await User.aggregate(defaultQuery);
     if (data) {
       return {
-        data: data,
-        totalrecods: data.length
+        data: data
+        // totalrecods: data.length
       };
     } else {
       return { data: null };

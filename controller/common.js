@@ -116,10 +116,8 @@ common_helper.delete = async (collection, id, data = {}) => {
   try {
     if (Object.keys(data).length > 0) {
       var data = await collection.findOneAndUpdate(id, data);
-      console.log("data", data);
     } else {
       var data = await collection.remove(id);
-      console.log("id remove", id);
     }
     if (data || data.length > 0) {
       return {
@@ -189,9 +187,14 @@ common_helper.updateMany = async (collection, condition) => {
 };
 
 /* Count Number of Records Query */
-common_helper.count = async (collection, data = {}) => {
+common_helper.count = async (collection, data2 = {}) => {
   try {
-    var data = await collection.find(data).countDocuments();
+    let data;
+    if (data) {
+      data = await collection.find(data2).countDocuments();
+    } else {
+      data = await collection.find().countDocuments();
+    }
     if (data || (data && data.length > 0)) {
       return {
         status: 1,

@@ -19,25 +19,26 @@ const Review = require("../../models/review");
 router.post("/allusersellers", async function(req, res) {
   try {
     // const ITEMS_PER_PAGE = 5;
+
     const ITEMS_PER_PAGE = global.gConfig.ITEMS_PER_PAGE;
     const page = req.body.page ? req.body.page : 1;
     const search = req.body.searchText ? req.body.searchText : null; // DM
     const skip = (page - 1) * ITEMS_PER_PAGE;
     const limit = req.body.limit ? req.body.limit : global.gConfig.LIMIT; // 5
+    // var alluser = await user_helper.getUsers(skip, limit, search);
     var alluser = await user_helper.getUsers(skip, limit, search);
-    console.log("all user", alluser);
+
     totalrecords = alluser.totalrecods;
 
-    // const totalrecord = await common_helper.count(Review, { alluser });
-    console.log("recordsTotal", totalrecords);
+    const totalrecord = await common_helper.count(User, {});
 
     let requestData = {
       limit: limit,
-      totalPages: Math.ceil(alluser.totalrecods / limit),
+      totalPages: Math.ceil(totalrecord.recordsTotal / limit),
       page: page,
       alluser
     };
-    // console.log("requestData", requestData);
+
     if (alluser) {
       res
         .status(global.gConfig.OK_STATUS)
@@ -166,9 +167,9 @@ router.post("/adminadduser", async function(req, res) {
 router.post("/profiledata", async function(req, res) {
   try {
     const id = req.body.id;
-    console.log("id", id);
+
     let user = await common_helper.find(User, { _id: id }, 1);
-    console.log("user", user);
+
     if (user.status === 1) {
       res
         .status(global.gConfig.OK_STATUS)
@@ -187,9 +188,9 @@ router.post("/profiledata", async function(req, res) {
 router.get("/edituser/:id", async function(req, res) {
   try {
     const id = req.params.id;
-    console.log("id", id);
+
     let user = await common_helper.find(User, { _id: id }, 1);
-    console.log("user", user);
+
     if (user.status === 1) {
       res
         .status(global.gConfig.OK_STATUS)
@@ -225,8 +226,6 @@ router.post("/edituserdata", async function(req, res) {
       const id = req.body.id;
       const updates = req.body;
       const options = { new: true };
-      console.log("id edited", id);
-      console.log("updates", updates);
 
       const result = await User.findByIdAndUpdate(id, updates, options);
       if (!result) {
@@ -267,30 +266,23 @@ router.delete("/deleteuser/:id", async function(req, res) {
 
 router.post("/allreviews", async function(req, res) {
   try {
-    console.log("all review api");
     // const ITEMS_PER_PAGE = 5;
     const ITEMS_PER_PAGE = global.gConfig.ITEMS_PER_PAGE;
     const page = req.body.page ? req.body.page : 1;
     const skip = (page - 1) * ITEMS_PER_PAGE;
     const limit = req.body.limit ? req.body.limit : global.gConfig.LIMIT; //5;global.gConfig.LIMIT
 
-    // console.log("profileID", profileId);
     let review = await review_helper.getAllReviews(skip, limit, page);
-    console.log("review data", review);
-    const totalrecord = review.totalRecords;
-    // const totalrecord = await common_helper.count(Review, {
-    //   profileReview: profileId
-    // });
-    // const totalrecord = review.length;
-    console.log("review total", totalrecord);
+
+    const totalrecord = await common_helper.count(Review, {});
+
     let requestData = {
-      totalRecord: totalrecord,
+      totalRecord: totalrecord.recordsTotal,
       limit: limit,
-      totalPages: Math.ceil(totalrecord / limit),
+      totalPages: Math.ceil(totalrecord.recordsTotal / limit),
       page: page,
       review: review.data
     };
-    console.log("requestData", requestData);
 
     if (review.status === 1) {
       res
@@ -315,19 +307,18 @@ router.post("/profileReview/:id", async function(req, res) {
     const skip = (page - 1) * ITEMS_PER_PAGE;
     const limit = req.body.limit ? req.body.limit : global.gConfig.LIMIT; //5;
 
-    console.log("profileID", profileId);
     let review = await review_helper.getReviewByProfileId(
       profileId,
       skip,
       limit,
       page
     );
-    console.log("review data", review);
+
     const totalrecord = await common_helper.count(Review, {
       profileReview: profileId
     });
     // const totalrecord = review.length;
-    console.log("review total", totalrecord);
+
     let requestData = {
       totalRecord: totalrecord.recordsTotal,
       limit: limit,
@@ -335,7 +326,6 @@ router.post("/profileReview/:id", async function(req, res) {
       page: page,
       review
     };
-    console.log("requestData", requestData);
 
     if (review.status === 1) {
       res
@@ -372,7 +362,7 @@ router.post("/login", async (req, res) => {
     };
 
     let login_resp = await common_helper.find(User, { email: value }, 1);
-    console.log("login_resp", login_resp);
+
     if (login_resp.status === 0) {
       res.status(global.gConfig.INTERNAL_SERVER_ERROR).json({
         status: 0,
@@ -460,7 +450,7 @@ router.post("/forgot_password", async (req, res) => {
   var errors = req.validationErrors();
   if (!errors) {
     var user = await common_helper.find(User, { email: req.body.email }, 1);
-    // console.log("user", user);
+
     if (user.status === 0) {
       res
         .status(config.INTERNAL_SERVER_ERROR)
@@ -493,8 +483,6 @@ router.post("/forgot_password", async (req, res) => {
           }
         );
         // global.gConfig.website_url + "/reset-password/" + reset_token;
-        console.log("mailrr", mail_resp);
-        console.log("reset_token", reset_token);
 
         if (mail_resp.status === 0) {
           res.status(global.gConfig.INTERNAL_SERVER_ERROR).json({
@@ -576,7 +564,6 @@ router.post("/reset_password", async (req, res) => {
                     message: "Error occured while reseting password of user"
                   });
                 } else {
-                  console.log("update_resp", update_resp);
                   res
                     .status(global.gConfig.OK_STATUS)
                     .json({ status: 1, message: "Password has been changed" });

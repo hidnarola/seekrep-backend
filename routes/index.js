@@ -287,7 +287,7 @@ router.post("/email_verify/:id", async (req, res) => {
       { _id: new ObjectId(user_resp.data._id) },
       { $set: { emailVerified: true } }
     );
-    console.log("user_update_resp", user_update_resp);
+
     var token = jwt.sign(
       user_update_resp,
       global.gConfig.ACCESS_TOKEN_SECRET_KEY,
@@ -345,8 +345,6 @@ router.post("/forgot_password", async (req, res) => {
         }
       );
       // global.gConfig.website_url + "/reset-password/" + reset_token;
-      console.log("mailrr", mail_resp);
-      console.log("reset_token", reset_token);
 
       if (mail_resp.status === 0) {
         res.json({
@@ -419,7 +417,6 @@ router.post("/reset_password", async (req, res) => {
                     message: "Error occured while reseting password of user"
                   });
                 } else {
-                  console.log("update_resp", update_resp);
                   res
                     .status(global.gConfig.OK_STATUS)
                     .json({ status: 1, message: "Password has been changed" });
@@ -545,7 +542,6 @@ router.route("/auth/google").post(
 router.route("/auth/facebook").post(
   passport.authenticate("facebookToken", { session: false }),
   function(req, res, next) {
-    console.log({ user: req.user });
     if (!req.user) {
       return res.send(401, "User Not Authenticated");
     }

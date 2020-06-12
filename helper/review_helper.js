@@ -50,8 +50,6 @@ review_helper.getReviewByProfileId = async (profileId, skip, limit, page) => {
       }
     ]);
     if (data) {
-      console.log("review LOG", data);
-
       return {
         status: 1,
         message: "data found",
@@ -146,13 +144,10 @@ review_helper.getAllReviews = async (skip, limit, page) => {
       }
     ]);
     if (data) {
-      console.log("review LOG", data);
-
       return {
         status: 1,
         message: "data found",
-        data: data,
-        totalRecords: data.length
+        data: data
       };
     } else {
       return { status: 2, message: "No data found" };
