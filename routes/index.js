@@ -355,13 +355,13 @@ router.post("/forgot_password", async (req, res) => {
       } else {
         res.status(global.gConfig.OK_STATUS).json({
           status: 1,
-          message: "Reset link was sent to your email address",
+          message: "Reset password link was sent to your email address",
           token: reset_token
         });
       }
     }
   } else {
-    res.status(global.gConfig.BAD_REQUEST).json({ message: errors });
+    res.json({ message: errors });
   }
 });
 
