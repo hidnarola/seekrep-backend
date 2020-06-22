@@ -12,6 +12,7 @@ module.exports = {
     clientID:
       "786932545380-dt9omvg5u3taapqdv4cv7v8tadtml487.apps.googleusercontent.com",
     clientSecret: "OamxjeANY-wWwQygE5JCTDP1",
-    callbackURL: "http://localhost:3000/auth/google/callback"
+    // callbackURL: "http://localhost:3000/auth/google/callback",
+    callbackURL: "https://seekrep-backend.herokuapp.com/auth/google/callback"
   }
 };
