@@ -315,6 +315,7 @@ router.post("/profileReview/:id", async function(req, res) {
     const totalrecord = await common_helper.count(Review, {
       profileReview: profileId
     });
+    console.log("totalrecord const", totalrecord);
     // const totalrecord = review.length;
 
     let requestData = {

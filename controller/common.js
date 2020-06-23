@@ -187,14 +187,9 @@ common_helper.updateMany = async (collection, condition) => {
 };
 
 /* Count Number of Records Query */
-common_helper.count = async (collection, data2 = {}) => {
+common_helper.count = async (collection, data = {}) => {
   try {
-    let data;
-    if (data) {
-      data = await collection.find(data2).countDocuments();
-    } else {
-      data = await collection.find().countDocuments();
-    }
+    var data = await collection.find(data).countDocuments();
     if (data || (data && data.length > 0)) {
       return {
         status: 1,
@@ -213,6 +208,33 @@ common_helper.count = async (collection, data2 = {}) => {
     };
   }
 };
+// common_helper.count = async (collection, data2 = {}) => {
+//   try {
+//     let data;
+//     if (data) {
+//       data = await collection.find(data2).countDocuments();
+//       console.log("data get", data);
+//     } else {
+//       data = await collection.find().countDocuments();
+//     }
+//     if (data || (data && data.length > 0)) {
+//       return {
+//         status: 1,
+//         message: "data found",
+//         data: data,
+//         recordsTotal: data
+//       };
+//     } else {
+//       return { status: 2, message: "No data found", recordsTotal: data };
+//     }
+//   } catch (err) {
+//     return {
+//       status: 0,
+//       message: "Error occurred while fetching data",
+//       error: err
+//     };
+//   }
+// };
 
 /* List Data with pagination and sorting */
 common_helper.findWithFilter = async (
