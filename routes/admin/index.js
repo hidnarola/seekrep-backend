@@ -275,6 +275,9 @@ router.post("/allreviews", async function(req, res) {
     let review = await review_helper.getAllReviews(skip, limit, page);
 
     const totalrecord = await common_helper.count(Review, {});
+    // console.log("review data", review.data);
+    // const sortedReviews = review.data.sort({ rating: -1 });
+    // console.log("sortedReviews", sortedReviews);
 
     let requestData = {
       totalRecord: totalrecord.recordsTotal,
@@ -479,7 +482,9 @@ router.post("/forgot_password", async (req, res) => {
           },
           {
             reset_link:
-              process.env.FRONTEND_API_LOCAL + "resetpassword/" + reset_token
+              process.env.FRONTEND_WEBSITE +
+              "admin/resetpassword/" +
+              reset_token
           }
         );
         // global.gConfig.website_url + "/reset-password/" + reset_token;
