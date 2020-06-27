@@ -28,7 +28,7 @@ router.post("/allusersellers", async function(req, res) {
     // var alluser = await user_helper.getUsers(skip, limit, search);
     var alluser = await user_helper.getUsers(skip, limit, search);
 
-    totalrecords = alluser.totalrecods;
+    // totalrecords = alluser.totalrecods;
 
     const totalrecord = await common_helper.count(User, {});
 
@@ -36,6 +36,7 @@ router.post("/allusersellers", async function(req, res) {
       limit: limit,
       totalPages: Math.ceil(totalrecord.recordsTotal / limit),
       page: page,
+      totalrecods: totalrecord.recordsTotal,
       alluser
     };
 
