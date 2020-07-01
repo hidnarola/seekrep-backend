@@ -26,11 +26,9 @@ const User = require("../../models/user");
 
 router.get("/sellerprofile/:id", async function(req, res) {
   try {
-    // console.log("ObjectId(req.userInfo.id)", ObjectId(req.userInfo.id));
     const id = req.params.id;
     console.log("id", id);
     let user = await user_helper.getUserById(id);
-    console.log("seller user", user);
     if (user.status === 1) {
       res
         .status(global.gConfig.OK_STATUS)

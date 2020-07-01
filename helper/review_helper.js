@@ -74,6 +74,7 @@ review_helper.getAllReviews = async (skip, limit, page) => {
         $match: {}
       },
       { $skip: skip },
+      { $sort: { createdAt: -1 } },
       { $limit: limit },
       {
         $lookup: {

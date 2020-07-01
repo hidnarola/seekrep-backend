@@ -456,13 +456,9 @@ router.post("/forgot_password", async (req, res) => {
     var user = await common_helper.find(User, { email: req.body.email }, 1);
 
     if (user.status === 0) {
-      res
-        .status(config.INTERNAL_SERVER_ERROR)
-        .json({ status: 0, message: "Error while finding email" });
+      res.json({ status: 0, message: "Error while finding email" });
     } else if (user.status === 2) {
-      res
-        .status(config.BAD_REQUEST)
-        .json({ status: 0, message: "No user available with given email" });
+      res.json({ status: 0, message: "No user available with given email" });
     } else if (user.status === 1) {
       if (user.data.role === "admin") {
         var reset_token = Buffer.from(
