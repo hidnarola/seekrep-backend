@@ -70,12 +70,9 @@ review_helper.getReviewByProfileId = async (profileId, skip, limit, page) => {
 review_helper.getAllReviews = async (skip, limit, page) => {
   try {
     let data = await Review.aggregate([
-      {
-        $match: {}
-      },
-      { $skip: skip },
-      { $sort: { createdAt: -1 } },
-      { $limit: limit },
+      // {
+      //   $match: {}
+      // },
       {
         $lookup: {
           from: "users",
@@ -120,7 +117,7 @@ review_helper.getAllReviews = async (skip, limit, page) => {
           transactionproof: { $first: "$transactionproof" },
           place: { $first: "$place" },
           review: { $first: "$review" },
-          profileReview: { $first: "$profileReview" },
+          // profileReview: { $first: "$profileReview" },
           createdAt: { $first: "$createdAt" },
 
           creator_details: {
@@ -128,8 +125,8 @@ review_helper.getAllReviews = async (skip, limit, page) => {
               _id: "$creator_details._id",
               firstName: "$creator_details.firstName",
               lastName: "$creator_details.lastName",
-              email: "$creator_details.email",
-              profileimage: "$creator_details.profileimage"
+              email: "$creator_details.email"
+              // profileimage: "$creator_details.profileimage"
             }
           },
           reviews_details: {
@@ -137,13 +134,17 @@ review_helper.getAllReviews = async (skip, limit, page) => {
               _id: "$reviews_details._id",
               firstName: "$reviews_details.firstName",
               lastName: "$reviews_details.lastName",
-              email: "$reviews_details.email",
-              profileimage: "$reviews_details.profileimage"
+              email: "$reviews_details.email"
+              // profileimage: "$reviews_details.profileimage"
             }
           }
         }
-      }
+      },
+      { $sort: { _id: -1, createdAt: -1 } },
+      { $skip: skip },
+      { $limit: limit }
     ]);
+
     if (data) {
       return {
         status: 1,

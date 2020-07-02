@@ -72,11 +72,9 @@ user_helper.getUserById = async userId => {
 // user_helper.getUsers = async (skip, limit, page) => {
 user_helper.getUsers = async (skip, limit, search) => {
   var defaultQuery = [
-    {
-      $match: {}
-    },
-    { $skip: skip },
-    { $limit: limit },
+    // {
+    //   $match: {}
+    // },
     {
       $unwind: {
         path: "$reviews",
@@ -114,7 +112,10 @@ user_helper.getUsers = async (skip, limit, search) => {
         reviewDetails: { $addToSet: "$review_details" },
         avgRating: { $avg: "$review_details.rating" }
       }
-    }
+    },
+    { $sort: { _id: -1, createdAt: -1 } },
+    { $skip: skip },
+    { $limit: limit }
   ];
 
   if (search) {
