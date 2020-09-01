@@ -142,7 +142,7 @@ router.post("/adminadduser", async function(req, res) {
       1
     );
     if (user.status === 1) {
-      res.json({ status: 0, message: "Email is alredy registered" });
+      res.json({ status: 0, message: "Email is already registered" });
       res.status(global.gConfig.BAD_REQUEST);
     } else if (user.status === 2) {
       var register_resp = await common_helper.insert(User, obj);
