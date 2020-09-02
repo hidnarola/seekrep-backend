@@ -9,6 +9,7 @@ const schema = new mongoose.Schema(
     password: { type: String },
     firstName: String,
     lastName: String,
+    userName: String,
     profileimage: String,
     countryname: String,
     depop: String,

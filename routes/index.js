@@ -36,15 +36,16 @@ router.post("/signup", async function(req, res) {
       lastName: req.body.lastName,
       email: req.body.email,
       password: req.body.password,
-      phone: req.body.phone,
-      gender: req.body.gender
+      userName: req.body.userName
+      // phone: req.body.phone,
+      // gender: req.body.gender
     };
-    if (req.files && req.files["image"]) {
-      var file = req.files["image"];
-      var mimetype = ["image/jpeg", "image/png", "application/pdf"];
-      let fileUpload = await common_helper.fileUpload(mimetype, file);
-      obj.image = file.name;
-    }
+    // if (req.files && req.files["image"]) {
+    //   var file = req.files["image"];
+    //   var mimetype = ["image/jpeg", "image/png", "application/pdf"];
+    //   let fileUpload = await common_helper.fileUpload(mimetype, file);
+    //   obj.image = file.name;
+    // }
 
     let user = await common_helper.find(
       User,
@@ -58,6 +59,7 @@ router.post("/signup", async function(req, res) {
       if (register_resp.status == 0) {
         res.json(register_resp);
       } else {
+        console.log("register_resp", register_resp);
         let mail_resp = await mail_helper.send(
           "email_confirmation",
           {
@@ -74,11 +76,18 @@ router.post("/signup", async function(req, res) {
               register_resp.data._id
           }
         );
-        res.status(global.gConfig.OK_STATUS).json({
-          message:
-            "You are registered successfully and verification link is send to your email id",
-          register_resp
-        });
+        console.log("mail_resp", mail_resp);
+        if (mail_resp.status === 1) {
+          res.status(global.gConfig.OK_STATUS).json({
+            message:
+              "You are registered successfully and verification link is send to your email id",
+            register_resp
+          });
+        } else {
+          res.json({
+            message: "Somting is worng while sending email"
+          });
+        }
       }
     }
   } else {

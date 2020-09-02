@@ -40,6 +40,7 @@ user_helper.getUserById = async userId => {
           lastName: { $first: "$lastName" },
           email: { $first: "$email" },
           password: { $first: "$password" },
+          userName: { $first: "$userName" },
           depop: { $first: "$depop" },
           eBay: { $first: "$eBay" },
           facebook: { $first: "$facebook" },
