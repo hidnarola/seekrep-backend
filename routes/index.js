@@ -85,7 +85,8 @@ router.post("/signup", async function(req, res) {
           });
         } else {
           res.json({
-            message: "Somting is worng while sending email"
+            message: "Somting is worng while sending email",
+            status: 0
           });
         }
       }
